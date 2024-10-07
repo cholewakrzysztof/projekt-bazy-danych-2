@@ -12,6 +12,7 @@
 - https://sqliteonline.com/
 - https://docs.djangoproject.com/en/5.1/intro/tutorial01/
 - https://www.jetbrains.com/pycharm/download/download-thanks.html?platform=windows
+- https://git-scm.com/downloads/win
 
 ## Poniżej już tylko śmieci, nie czytać...
 ##
