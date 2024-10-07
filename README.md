@@ -11,6 +11,7 @@
 - https://www.w3schools.com/django/index.php
 - https://sqliteonline.com/
 - https://docs.djangoproject.com/en/5.1/intro/tutorial01/
+- https://www.jetbrains.com/pycharm/download/download-thanks.html?platform=windows
 
 ## Poniżej już tylko śmieci, nie czytać...
 ##
