@@ -13,6 +13,7 @@
 - https://docs.djangoproject.com/en/5.1/intro/tutorial01/
 - https://www.jetbrains.com/pycharm/download/download-thanks.html?platform=windows
 - https://git-scm.com/downloads/win
+- https://wampserver.aviatechno.net/
 
 # Tutorials
 - Projektowanie modeli uml: https://sparxsystems.com/resources/gallery/diagrams/software/sw-data_modeling_-conceptual_data_model.html
