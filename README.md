@@ -1,7 +1,8 @@
 # TO BĘDZIE DO POPRAWY SPOKOJNIE
 # TECH STACK
 - [Django] - 5.1 version https://www.djangoproject.com/download/
-- [SQLite] - built in Django
+- [MySql] - z pomocą WampServer
+- [WampServer] - 3.3.5 64 bit
 - [Python] - 3.12.7 https://www.python.org/downloads/
 
 # IMPORTNANT LINKS
