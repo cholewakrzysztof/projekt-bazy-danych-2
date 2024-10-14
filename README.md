@@ -14,6 +14,9 @@
 - https://www.jetbrains.com/pycharm/download/download-thanks.html?platform=windows
 - https://git-scm.com/downloads/win
 
+# Tutorials
+- Projektowanie modeli uml: https://sparxsystems.com/resources/gallery/diagrams/software/sw-data_modeling_-conceptual_data_model.html
+
 ## Poniżej już tylko śmieci, nie czytać...
 ##
 ##
