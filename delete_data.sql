@@ -1,0 +1,21 @@
+-- Usuwanie danych z tabel w odpowiedniej kolejności
+DELETE FROM contributions;
+DELETE FROM partners;
+DELETE FROM contribution_types;
+DELETE FROM tickets;
+DELETE FROM ticket_types;
+DELETE FROM participants;
+DELETE FROM performers;
+DELETE FROM concerts;
+DELETE FROM localizations;
+DELETE FROM address;
+DELETE FROM event_series;
+DELETE FROM styles;
+DELETE FROM memberships;
+DELETE FROM bands;
+DELETE FROM artists;
+DELETE FROM works;
+DELETE FROM roles;
+DELETE FROM employees;
+DELETE FROM contact_info;
+DELETE FROM persons;
