@@ -1,0 +1,15 @@
+CREATE INDEX idx_tickets_concert_id ON tickets (concert_id);
+CREATE INDEX idx_concerts_localization_id ON concerts (localization_id);
+CREATE INDEX idx_works_concert_id ON works (concert_id);
+CREATE INDEX idx_performers_concert_id ON performers (concert_id);
+CREATE INDEX idx_performers_concert_band ON performers (concert_id, band_id);
+CREATE INDEX idx_contributions_partner_id ON contributions (partner_id);
+CREATE INDEX idx_concerts_series_id ON concerts (event_series_id);
+CREATE INDEX idx_memberships_artist_id ON memberships (artist_id);
+CREATE INDEX idx_performers_style_id ON performers (style_id);
+CREATE INDEX idx_tickets_type_id ON tickets (type_id);
+CREATE INDEX idx_event_series_dates ON event_series (start_date, end_date);
+CREATE INDEX idx_concerts_date_duration ON concerts (date, duration);
+CREATE INDEX idx_artists_pseudonym ON artists (pseudonym);
+CREATE INDEX idx_tickets_price ON tickets (price);
+CREATE INDEX idx_address_city_post_code ON address (city, post_code);
