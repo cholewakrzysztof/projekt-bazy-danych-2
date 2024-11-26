@@ -96,7 +96,7 @@ CREATE TABLE concerts (
     event_series_id INT,
     name VARCHAR(60) NULL,
     date DATE,
-    duration TIME(7) NULL,
+    duration TIME NULL,
     FOREIGN KEY (localization_id) REFERENCES localizations(localization_id),
     FOREIGN KEY (event_series_id) REFERENCES event_series(series_id)
 );
