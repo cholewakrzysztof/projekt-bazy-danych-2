@@ -13,3 +13,4 @@ CREATE INDEX idx_concerts_date_duration ON concerts (date, duration);
 CREATE INDEX idx_artists_pseudonym ON artists (pseudonym);
 CREATE INDEX idx_tickets_price ON tickets (price);
 CREATE INDEX idx_address_city_post_code ON address (city, post_code);
+CREATE INDEX idx_person_lastname ON persons(last_name);
