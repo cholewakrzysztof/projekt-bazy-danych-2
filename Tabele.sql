@@ -8,8 +8,10 @@ CREATE TABLE persons (
 
 CREATE TABLE contact_info (
     contact_info_id INT AUTO_INCREMENT PRIMARY KEY,
+    person_id INT,
     email VARCHAR(50) NULL,
-    phone_number VARCHAR(12) NULL
+    phone_number VARCHAR(12) NULL,
+    FOREIGN KEY (person_id) REFERENCES persons(person_id)
 );
 
 CREATE TABLE employees (

@@ -15,8 +15,8 @@ CREATE PROCEDURE AddContactInfo(IN num_records INT)
 BEGIN
     DECLARE i INT DEFAULT 1;
     WHILE i <= num_records DO
-        INSERT INTO contact_info (email, phone_number)
-        VALUES (CONCAT('email', i, '@example.com'), CONCAT('12345678', i));
+        INSERT INTO contact_info (email, phone_number, person_id)
+        VALUES (CONCAT('email', i, '@example.com'), CONCAT('12345678', i), i);
         SET i = i + 1;
     END WHILE;
 END$$
