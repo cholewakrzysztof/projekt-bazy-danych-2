@@ -1,53 +1,27 @@
-CREATE USER 'admin'@'%' IDENTIFIED BY 'admin_password';
-CREATE USER 'employee'@'%' IDENTIFIED BY 'employee_password';
-CREATE USER 'client'@'%' IDENTIFIED BY 'client_password';
+-- Tworzenie użytkownika administratora
+DROP USER 'admin_user'@'%';
+DROP USER 'worker_user'@'%';
+DROP USER 'client_user'@'%';
 
-GRANT ALL PRIVILEGES ON contributions.* TO 'admin'@'%';
-GRANT ALL PRIVILEGES ON contribution_types.* TO 'admin'@'%';
-GRANT ALL PRIVILEGES ON partners.* TO 'admin'@'%';
-GRANT ALL PRIVILEGES ON localizations.* TO 'admin'@'%';
-GRANT ALL PRIVILEGES ON address.* TO 'admin'@'%';
-GRANT ALL PRIVILEGES ON tickets.* TO 'admin'@'%';
-GRANT ALL PRIVILEGES ON ticket_types.* TO 'admin'@'%';
-GRANT ALL PRIVILEGES ON event_series.* TO 'admin'@'%';
-GRANT ALL PRIVILEGES ON concerts.* TO 'admin'@'%';
-GRANT ALL PRIVILEGES ON performers.* TO 'admin'@'%';
-GRANT ALL PRIVILEGES ON styles.* TO 'admin'@'%';
-GRANT ALL PRIVILEGES ON participants.* TO 'admin'@'%';
-GRANT ALL PRIVILEGES ON memberships.* TO 'admin'@'%';
-GRANT ALL PRIVILEGES ON bands.* TO 'admin'@'%';
-GRANT ALL PRIVILEGES ON artists.* TO 'admin'@'%';
-GRANT ALL PRIVILEGES ON works.* TO 'admin'@'%';
-GRANT ALL PRIVILEGES ON roles.* TO 'admin'@'%';
-GRANT ALL PRIVILEGES ON employees.* TO 'admin'@'%';
-GRANT ALL PRIVILEGES ON persons.* TO 'admin'@'%';
-GRANT ALL PRIVILEGES ON contact_info.* TO 'admin'@'%';
 
-GRANT SELECT ON contributions.* TO 'employee'@'%';
-GRANT SELECT ON partners.* TO 'employee'@'%';
-GRANT SELECT ON localizations.* TO 'employee'@'%';
-GRANT SELECT ON address.* TO 'employee'@'%';
-GRANT SELECT, UPDATE ON tickets.* TO 'employee'@'%';
-GRANT SELECT ON ticket_types.* TO 'employee'@'%';
-GRANT SELECT ON event_series.* TO 'employee'@'%';
-GRANT SELECT ON concerts.* TO 'employee'@'%';
-GRANT SELECT ON performers.* TO 'employee'@'%';
-GRANT SELECT ON styles.* TO 'employee'@'%';
-GRANT SELECT ON participants.* TO 'employee'@'%';
-GRANT SELECT ON memberships.* TO 'employee'@'%';
-GRANT SELECT ON bands.* TO 'employee'@'%';
-GRANT SELECT ON artists.* TO 'employee'@'%';
-GRANT SELECT ON works.* TO 'employee'@'%';
-GRANT SELECT ON roles.* TO 'employee'@'%';
-GRANT SELECT ON employees.* TO 'employee'@'%';
-GRANT SELECT ON persons.* TO 'employee'@'%';
-GRANT SELECT ON contact_info.* TO 'employee'@'%';
+CREATE USER 'admin_user'@'%' IDENTIFIED BY 'secure_password_admin';
+-- Tworzenie użytkownika pracownika
+CREATE USER 'worker_user'@'%' IDENTIFIED BY 'secure_password_worker';
 
-GRANT SELECT ON tickets.* TO 'client'@'%';
-GRANT SELECT ON concerts.* TO 'client'@'%';
-GRANT SELECT ON event_series.* TO 'client'@'%';
-GRANT SELECT ON performers.* TO 'client'@'%';
-GRANT SELECT ON bands.* TO 'client'@'%';
-GRANT SELECT ON memberships.* TO 'client'@'%';
+-- Tworzenie użytkownika klienta
+CREATE USER 'client_user'@'%' IDENTIFIED BY 'secure_password_client';
 
-FLUSH PRIVILEGES;
+GRANT ALL PRIVILEGES ON db_schema.* TO 'admin_user'@'%';
+-- Uprawnienia SELECT dla wszystkich tabel w db_schema
+GRANT SELECT ON db_schema.* TO 'worker_user'@'%';
+
+-- Uprawnienia INSERT, UPDATE na tabeli Bilety
+GRANT INSERT, UPDATE ON db_schema.tickets TO 'worker_user'@'%';
+
+
+GRANT SELECT ON db_schema.tickets TO 'client_user'@'%';
+GRANT SELECT ON db_schema.concerts TO 'client_user'@'%';
+GRANT SELECT ON db_schema.event_series TO 'client_user'@'%';
+GRANT SELECT ON db_schema.performers TO 'client_user'@'%';
+GRANT SELECT ON db_schema.bands TO 'client_user'@'%';
+GRANT SELECT ON db_schema.memberships TO 'client_user'@'%';
