@@ -3,15 +3,13 @@ CREATE TABLE persons (
     first_name VARCHAR(40),
     last_name VARCHAR(40),
     sex BIT NULL,
-    age INT NULL,
+    age INT NULL
 );
 
 CREATE TABLE contact_info (
     contact_info_id INT AUTO_INCREMENT PRIMARY KEY,
-    person_id INT,
     email VARCHAR(50) NULL,
-    phone_number VARCHAR(12) NULL,
-    FOREIGN KEY (person_id) REFERENCES persons(person_id)
+    phone_number VARCHAR(12) NULL
 );
 
 CREATE TABLE employees (
@@ -85,7 +83,7 @@ CREATE TABLE address (
     address_id INT AUTO_INCREMENT PRIMARY KEY,
     country VARCHAR(40),
     province VARCHAR(40) NULL,
-    post_code VARCHAR(40) NULL,
+    post_code VARCHAR(40),
     city VARCHAR(40),
     street VARCHAR(40) NULL,
     street_number VARCHAR(4),
@@ -98,7 +96,7 @@ CREATE TABLE concerts (
     event_series_id INT,
     name VARCHAR(60) NULL,
     date DATE,
-    duration TIME NULL,
+    duration TIME(7) NULL,
     FOREIGN KEY (localization_id) REFERENCES localizations(localization_id),
     FOREIGN KEY (event_series_id) REFERENCES event_series(series_id)
 );
