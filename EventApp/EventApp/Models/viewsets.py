@@ -1,12 +1,14 @@
-from django.db.migrations import DeleteModel
-from rest_framework import viewsets
-from rest_framework.generics import UpdateAPIView, DestroyAPIView
+from datetime import datetime
+
+from rest_framework.response import Response
+from rest_framework import viewsets, status
+from rest_framework.decorators import action
 
 from .models import (Address, Artists, AuthGroup, AuthGroupPermissions, AuthPermission, AuthUser, AuthUserGroups, AuthUserUserPermissions, Bands, Concerts, ContactInfo, ContributionTypes, Contributions, DjangoAdminLog, DjangoContentType, DjangoMigrations, DjangoSession, Employees, EventSeries, Localizations, Memberships, Participants, Partners, Performers, Persons, Roles, Styles, TicketTypes, Tickets, Works)
 from .serializers import AddressSerializer, ArtistsSerializer, AuthGroupSerializer, AuthGroupPermissionsSerializer, AuthPermissionSerializer, AuthUserSerializer, AuthUserGroupsSerializer, AuthUserUserPermissionsSerializer, BandsSerializer, ConcertsSerializer, ContactInfoSerializer, ContributionTypesSerializer, ContributionsSerializer, DjangoAdminLogSerializer, DjangoContentTypeSerializer, DjangoMigrationsSerializer, DjangoSessionSerializer, EmployeesSerializer, EventSeriesSerializer, LocalizationsSerializer, MembershipsSerializer, ParticipantsSerializer, PartnersSerializer, PerformersSerializer, PersonsSerializer, RolesSerializer, StylesSerializer, TicketTypesSerializer, TicketsSerializer, WorksSerializer
 
 
-class AddressViewSet(viewsets.ModelViewSet, DestroyAPIView):
+class AddressViewSet(viewsets.ModelViewSet):
     queryset = Address.objects.all()
     serializer_class = AddressSerializer
 
@@ -100,8 +102,15 @@ class EventSeriesViewSet(viewsets.ModelViewSet):
     queryset = EventSeries.objects.all()
     serializer_class = EventSeriesSerializer
 
+    @action(detail=False, methods=['get'], url_path=r'custom_action/(?P<id>.+)')
+    def events_before_date(self, request, id=None):
+        queryset = EventSeries.objects.filter(series_id__exact=id)
 
-class LocalizationsViewSet(viewsets.ModelViewSet, UpdateAPIView):
+        serializer = EventSeriesSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+
+class LocalizationsViewSet(viewsets.ModelViewSet):
     queryset = Localizations.objects.all()
     serializer_class = LocalizationsSerializer
 

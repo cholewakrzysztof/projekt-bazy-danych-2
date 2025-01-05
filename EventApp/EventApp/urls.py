@@ -15,17 +15,13 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
-# urls.py
 from django.urls import path, include
+from rest_framework import permissions
 from rest_framework.routers import DefaultRouter
 from EventApp.Models.viewsets import (
-    AddressViewSet, ArtistsViewSet, AuthGroupViewSet,
-    AuthGroupPermissionsViewSet, AuthPermissionViewSet, AuthUserViewSet,
-    AuthUserGroupsViewSet, AuthUserUserPermissionsViewSet, BandsViewSet,
+    AddressViewSet, ArtistsViewSet, BandsViewSet,
     ConcertsViewSet, ContactInfoViewSet, ContributionTypesViewSet,
-    ContributionsViewSet, DjangoAdminLogViewSet, DjangoContentTypeViewSet,
-    DjangoMigrationsViewSet, DjangoSessionViewSet, EmployeesViewSet,
+    ContributionsViewSet, EmployeesViewSet,
     EventSeriesViewSet, LocalizationsViewSet, MembershipsViewSet,
     ParticipantsViewSet, PartnersViewSet, PerformersViewSet,
     PersonsViewSet, RolesViewSet, StylesViewSet, TicketTypesViewSet,
@@ -33,23 +29,25 @@ from EventApp.Models.viewsets import (
 )
 
 router = DefaultRouter()
+
+#router.register(r'auth_groups', AuthGroupViewSet)
+#router.register(r'auth_group_permissions', AuthGroupPermissionsViewSet)
+#router.register(r'auth_permissions', AuthPermissionViewSet)
+#router.register(r'auth_users', AuthUserViewSet)
+#router.register(r'auth_user_groups', AuthUserGroupsViewSet)
+#router.register(r'auth_user_user_permissions', AuthUserUserPermissionsViewSet)
+#router.register(r'django_admin_log', DjangoAdminLogViewSet)
+#router.register(r'django_content_type', DjangoContentTypeViewSet)
+#router.register(r'django_migrations', DjangoMigrationsViewSet)
+#router.register(r'django_session', DjangoSessionViewSet)
 router.register(r'addresses', AddressViewSet)
 router.register(r'artists', ArtistsViewSet)
-router.register(r'auth_groups', AuthGroupViewSet)
-router.register(r'auth_group_permissions', AuthGroupPermissionsViewSet)
-router.register(r'auth_permissions', AuthPermissionViewSet)
-router.register(r'auth_users', AuthUserViewSet)
-router.register(r'auth_user_groups', AuthUserGroupsViewSet)
-router.register(r'auth_user_user_permissions', AuthUserUserPermissionsViewSet)
 router.register(r'bands', BandsViewSet)
 router.register(r'concerts', ConcertsViewSet)
 router.register(r'contact_info', ContactInfoViewSet)
 router.register(r'contribution_types', ContributionTypesViewSet)
 router.register(r'contributions', ContributionsViewSet)
-router.register(r'django_admin_log', DjangoAdminLogViewSet)
-router.register(r'django_content_type', DjangoContentTypeViewSet)
-router.register(r'django_migrations', DjangoMigrationsViewSet)
-router.register(r'django_session', DjangoSessionViewSet)
+
 router.register(r'employees', EmployeesViewSet)
 router.register(r'event_series', EventSeriesViewSet)
 router.register(r'localizations', LocalizationsViewSet)
@@ -69,20 +67,19 @@ from drf_yasg import openapi
 
 schema_view = get_schema_view(
    openapi.Info(
-      title="Music App API",
+      title="Event App API",
       default_version='v1',
       description="API for music events, concerts, and artists",
-      terms_of_service="https://www.google.com/policies/terms/",
-      contact=openapi.Contact(email="contact@musicapp.local"),
-      license=openapi.License(name="BSD License"),
    ),
    public=True,
+   permission_classes=(permissions.AllowAny,),
 )
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('openapi/', include(router.urls)),
-    path('swagger/', schema_view.as_view(), name='swagger-docs'),
+    path('swagger/', schema_view.with_ui('swagger', cache_timeout=0),
+        name='schema-swagger-ui'),
 
 ]
 
