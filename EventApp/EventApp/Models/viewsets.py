@@ -6,7 +6,7 @@ from .models import (Address, Artists, AuthGroup, AuthGroupPermissions, AuthPerm
 from .serializers import AddressSerializer, ArtistsSerializer, AuthGroupSerializer, AuthGroupPermissionsSerializer, AuthPermissionSerializer, AuthUserSerializer, AuthUserGroupsSerializer, AuthUserUserPermissionsSerializer, BandsSerializer, ConcertsSerializer, ContactInfoSerializer, ContributionTypesSerializer, ContributionsSerializer, DjangoAdminLogSerializer, DjangoContentTypeSerializer, DjangoMigrationsSerializer, DjangoSessionSerializer, EmployeesSerializer, EventSeriesSerializer, LocalizationsSerializer, MembershipsSerializer, ParticipantsSerializer, PartnersSerializer, PerformersSerializer, PersonsSerializer, RolesSerializer, StylesSerializer, TicketTypesSerializer, TicketsSerializer, WorksSerializer
 
 
-class AddressViewSet(viewsets.ModelViewSet):
+class AddressViewSet(viewsets.ModelViewSet, DestroyAPIView):
     queryset = Address.objects.all()
     serializer_class = AddressSerializer
 
