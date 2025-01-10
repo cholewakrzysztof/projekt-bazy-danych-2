@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Address, Artists, AuthGroup, AuthGroupPermissions, AuthPermission, AuthUser, AuthUserGroups, AuthUserUserPermissions, Bands, Concerts, ContactInfo, ContributionTypes, Contributions, DjangoAdminLog, DjangoContentType, DjangoMigrations, DjangoSession, Employees, EventSeries, Localizations, Memberships, Participants, Partners, Performers, Persons, Roles, Styles, TicketTypes, Tickets, Works
+from .models import Address, Artists, AuthGroup, AuthGroupPermissions, AuthPermission, AuthUser, AuthUserGroups, AuthUserUserPermissions, Bands, Concerts, ContactInfo, ContributionTypes, Contributions, DjangoAdminLog, DjangoContentType, DjangoMigrations, DjangoSession, Employees, EventSeries, Localizations, Memberships, Participants, Partners, Performers, Persons, Roles, Styles, TicketTypes, Tickets, Works, ConcertDetailsView, EmployeeWorkDetails, TicketSalesSummary
 
 class AddressSerializer(serializers.ModelSerializer):
     class Meta:
@@ -94,6 +94,23 @@ class EmployeesSerializer(serializers.ModelSerializer):
 class EventSeriesSerializer(serializers.ModelSerializer):
     class Meta:
         model = EventSeries
+        fields = '__all__'
+
+class ConcertDetailsViewSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ConcertDetailsView
+        fields = '__all__'
+
+
+class EmployeeWorkDetailsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = EmployeeWorkDetails
+        fields = '__all__'
+
+
+class TicketSalesSummarySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TicketSalesSummary
         fields = '__all__'
 
 class LocalizationsSerializer(serializers.ModelSerializer):

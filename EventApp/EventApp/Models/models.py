@@ -221,6 +221,50 @@ class EventSeries(models.Model):
         db_table = 'event_series'
 
 
+class ConcertDetailsView(models.Model):
+    concert_id = models.IntegerField()
+    concert_name = models.CharField(max_length=255)
+    date = models.DateField()
+    duration = models.IntegerField()
+    series_name = models.CharField(max_length=255)
+    country = models.CharField(max_length=255)
+    city = models.CharField(max_length=255)
+    street = models.CharField(max_length=255)
+    street_number = models.CharField(max_length=255)
+
+    class Meta:
+        managed = False  # Django nie będzie zarządzać tą tabelą
+        db_table = 'Concert_details_view'
+
+class EmployeeWorkDetails(models.Model):
+    first_name = models.CharField(max_length=255)
+    last_name = models.CharField(max_length=255)
+    email = models.EmailField()
+    concert_id = models.IntegerField()
+    concert_name = models.CharField(max_length=255)
+    date = models.DateField()
+    work_hours = models.IntegerField()
+    role_name = models.CharField(max_length=255)
+    salary = models.DecimalField(max_digits=10, decimal_places=2)
+
+    class Meta:
+        managed = False
+        db_table = 'Employee_work_details'
+
+
+class TicketSalesSummary(models.Model):
+    series_id = models.IntegerField()
+    series_name = models.CharField(max_length=255)
+    concert_id = models.IntegerField()
+    concert_name = models.CharField(max_length=255)
+    sum_sold_tickets = models.IntegerField()
+    number_of_participants = models.IntegerField()
+
+    class Meta:
+        managed = False
+        db_table = 'Ticket_sales_summary'
+
+
 class Localizations(models.Model):
     localization_id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=60, blank=True, null=True)

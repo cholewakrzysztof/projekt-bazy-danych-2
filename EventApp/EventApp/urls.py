@@ -25,7 +25,8 @@ from EventApp.Models.viewsets import (
     EventSeriesViewSet, LocalizationsViewSet, MembershipsViewSet,
     ParticipantsViewSet, PartnersViewSet, PerformersViewSet,
     PersonsViewSet, RolesViewSet, StylesViewSet, TicketTypesViewSet,
-    TicketsViewSet, WorksViewSet
+    TicketsViewSet, WorksViewSet,
+    ConcertDetailsViewSet, EmployeeWorkDetailsViewSet, TicketSalesSummaryViewSet
 )
 
 router = DefaultRouter()
@@ -61,6 +62,9 @@ router.register(r'styles', StylesViewSet)
 router.register(r'ticket_types', TicketTypesViewSet)
 router.register(r'tickets', TicketsViewSet)
 router.register(r'works', WorksViewSet)
+router.register(r'view_concert_details', ConcertDetailsViewSet, basename='view_concert_details')
+router.register(r'view_employee_work_details', EmployeeWorkDetailsViewSet, basename='view_employee_work_details')
+router.register(r'view_ticket_sales_summary', TicketSalesSummaryViewSet, basename='view_ticket_sales_summary')
 
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi

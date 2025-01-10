@@ -4,8 +4,8 @@ from rest_framework.response import Response
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 
-from .models import (Address, Artists, AuthGroup, AuthGroupPermissions, AuthPermission, AuthUser, AuthUserGroups, AuthUserUserPermissions, Bands, Concerts, ContactInfo, ContributionTypes, Contributions, DjangoAdminLog, DjangoContentType, DjangoMigrations, DjangoSession, Employees, EventSeries, Localizations, Memberships, Participants, Partners, Performers, Persons, Roles, Styles, TicketTypes, Tickets, Works)
-from .serializers import AddressSerializer, ArtistsSerializer, AuthGroupSerializer, AuthGroupPermissionsSerializer, AuthPermissionSerializer, AuthUserSerializer, AuthUserGroupsSerializer, AuthUserUserPermissionsSerializer, BandsSerializer, ConcertsSerializer, ContactInfoSerializer, ContributionTypesSerializer, ContributionsSerializer, DjangoAdminLogSerializer, DjangoContentTypeSerializer, DjangoMigrationsSerializer, DjangoSessionSerializer, EmployeesSerializer, EventSeriesSerializer, LocalizationsSerializer, MembershipsSerializer, ParticipantsSerializer, PartnersSerializer, PerformersSerializer, PersonsSerializer, RolesSerializer, StylesSerializer, TicketTypesSerializer, TicketsSerializer, WorksSerializer
+from .models import (Address, Artists, AuthGroup, AuthGroupPermissions, AuthPermission, AuthUser, AuthUserGroups, AuthUserUserPermissions, Bands, Concerts, ContactInfo, ContributionTypes, Contributions, DjangoAdminLog, DjangoContentType, DjangoMigrations, DjangoSession, Employees, EventSeries, Localizations, Memberships, Participants, Partners, Performers, Persons, Roles, Styles, TicketTypes, Tickets, Works, ConcertDetailsView, EmployeeWorkDetails, TicketSalesSummary)
+from .serializers import AddressSerializer, ArtistsSerializer, AuthGroupSerializer, AuthGroupPermissionsSerializer, AuthPermissionSerializer, AuthUserSerializer, AuthUserGroupsSerializer, AuthUserUserPermissionsSerializer, BandsSerializer, ConcertsSerializer, ContactInfoSerializer, ContributionTypesSerializer, ContributionsSerializer, DjangoAdminLogSerializer, DjangoContentTypeSerializer, DjangoMigrationsSerializer, DjangoSessionSerializer, EmployeesSerializer, EventSeriesSerializer, LocalizationsSerializer, MembershipsSerializer, ParticipantsSerializer, PartnersSerializer, PerformersSerializer, PersonsSerializer, RolesSerializer, StylesSerializer, TicketTypesSerializer, TicketsSerializer, WorksSerializer,ConcertDetailsViewSerializer,EmployeeWorkDetailsSerializer,TicketSalesSummarySerializer
 
 
 class AddressViewSet(viewsets.ModelViewSet):
@@ -107,6 +107,25 @@ class EventSeriesViewSet(viewsets.ModelViewSet):
         queryset = EventSeries.objects.filter(series_id__exact=id)
 
         serializer = EventSeriesSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+class ConcertDetailsViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = ConcertDetailsView.objects.all()
+    serializer_class = ConcertDetailsViewSerializer
+
+
+class EmployeeWorkDetailsViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = EmployeeWorkDetails.objects.all()
+    serializer_class = EmployeeWorkDetailsSerializer
+
+
+class TicketSalesSummaryViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = TicketSalesSummary.objects.all()
+    serializer_class = TicketSalesSummarySerializer
+    @action(detail=False, methods=['get'], url_path=r'summary_by_series/(?P<series_id>\d+)')
+    def summary_by_series(self, request, series_id=None):
+        queryset = TicketSalesSummary.objects.filter(series_id=series_id)
+        serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 
 
