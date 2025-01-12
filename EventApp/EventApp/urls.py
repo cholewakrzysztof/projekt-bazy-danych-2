@@ -26,7 +26,8 @@ from EventApp.Models.viewsets import (
     ParticipantsViewSet, PartnersViewSet, PerformersViewSet,
     PersonsViewSet, RolesViewSet, StylesViewSet, TicketTypesViewSet,
     TicketsViewSet, WorksViewSet,
-    ConcertDetailsViewSet, EmployeeWorkDetailsViewSet, TicketSalesSummaryViewSet
+    ConcertDetailsViewSet, EmployeeWorkDetailsViewSet, TicketSalesSummaryViewSet,
+
 )
 
 router = DefaultRouter()
@@ -41,6 +42,7 @@ router = DefaultRouter()
 #router.register(r'django_content_type', DjangoContentTypeViewSet)
 #router.register(r'django_migrations', DjangoMigrationsViewSet)
 #router.register(r'django_session', DjangoSessionViewSet)
+
 router.register(r'addresses', AddressViewSet)
 router.register(r'artists', ArtistsViewSet)
 router.register(r'bands', BandsViewSet)

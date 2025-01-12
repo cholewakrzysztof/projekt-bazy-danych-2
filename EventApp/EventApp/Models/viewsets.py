@@ -3,7 +3,7 @@ from datetime import datetime
 from rest_framework.response import Response
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
-
+from django.db import connection
 from .models import (Address, Artists, AuthGroup, AuthGroupPermissions, AuthPermission, AuthUser, AuthUserGroups, AuthUserUserPermissions, Bands, Concerts, ContactInfo, ContributionTypes, Contributions, DjangoAdminLog, DjangoContentType, DjangoMigrations, DjangoSession, Employees, EventSeries, Localizations, Memberships, Participants, Partners, Performers, Persons, Roles, Styles, TicketTypes, Tickets, Works, ConcertDetailsView, EmployeeWorkDetails, TicketSalesSummary)
 from .serializers import AddressSerializer, ArtistsSerializer, AuthGroupSerializer, AuthGroupPermissionsSerializer, AuthPermissionSerializer, AuthUserSerializer, AuthUserGroupsSerializer, AuthUserUserPermissionsSerializer, BandsSerializer, ConcertsSerializer, ContactInfoSerializer, ContributionTypesSerializer, ContributionsSerializer, DjangoAdminLogSerializer, DjangoContentTypeSerializer, DjangoMigrationsSerializer, DjangoSessionSerializer, EmployeesSerializer, EventSeriesSerializer, LocalizationsSerializer, MembershipsSerializer, ParticipantsSerializer, PartnersSerializer, PerformersSerializer, PersonsSerializer, RolesSerializer, StylesSerializer, TicketTypesSerializer, TicketsSerializer, WorksSerializer,ConcertDetailsViewSerializer,EmployeeWorkDetailsSerializer,TicketSalesSummarySerializer
 
@@ -153,6 +153,24 @@ class PerformersViewSet(viewsets.ModelViewSet):
     queryset = Performers.objects.all()
     serializer_class = PerformersSerializer
 
+    @action(detail=False, methods=['post'], url_path='delete-band-performances')
+    def delete_band_performances(self, request):
+        """
+        Endpoint to call DeleteBandPerformancesAndAdjustPlaces procedure
+        """
+        band_id = request.data.get('band_id')
+        concert_id = request.data.get('concert_id')
+
+        if not (band_id and concert_id):
+            return Response(
+                {"error": "band_id and concert_id are required"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        with connection.cursor() as cursor:
+            cursor.callproc("DeleteBandPerformancesAndAdjustPlaces", [band_id, concert_id])
+
+        return Response({"message": "Band performances deleted and places adjusted"}, status=status.HTTP_200_OK)
 
 class PersonsViewSet(viewsets.ModelViewSet):
     queryset = Persons.objects.all()
@@ -178,7 +196,36 @@ class TicketsViewSet(viewsets.ModelViewSet):
     queryset = Tickets.objects.all()
     serializer_class = TicketsSerializer
 
+    @action(detail=False, methods=['post'], url_path='mark-used-tickets')
+    def mark_used_tickets(self, request):
+        """
+        Endpoint to call MarkUsedTicketsForPastConcerts procedure
+        """
+        with connection.cursor() as cursor:
+            cursor.callproc("MarkUsedTicketsForPastConcerts")
+        return Response({"message": "Procedure executed successfully"}, status=status.HTTP_200_OK)
+
 
 class WorksViewSet(viewsets.ModelViewSet):
     queryset = Works.objects.all()
     serializer_class = WorksSerializer
+
+    @action(detail=False, methods=['post'], url_path='update-salaries')
+    def update_salaries(self, request):
+        """
+        Endpoint to call UpdateSalariesByWorkRoleAndConcert procedure
+        """
+        concert_id = request.data.get('concert_id')
+        work_role_id = request.data.get('work_role_id')
+        multiplier = request.data.get('multiplier')
+
+        if not (concert_id and work_role_id and multiplier):
+            return Response(
+                {"error": "concert_id, work_role_id, and multiplier are required"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        with connection.cursor() as cursor:
+            cursor.callproc("UpdateSalariesByWorkRoleAndConcert", [concert_id, work_role_id, multiplier])
+
+        return Response({"message": "Salaries updated successfully"}, status=status.HTTP_200_OK)
