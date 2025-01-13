@@ -158,3 +158,14 @@ CREATE TABLE contributions (
     FOREIGN KEY (series_id) REFERENCES event_series(series_id),
     FOREIGN KEY (contribution_type_id) REFERENCES contribution_types(contribution_type_id)
 );
+
+CREATE TABLE users (
+    user_id INT AUTO_INCREMENT PRIMARY KEY,
+    login VARCHAR(60) NOT NULL,
+    password VARCHAR(60) NOT NULL,
+    user_type VARCHAR(10) NOT NULL,
+    active BOOLEAN NOT NULL,
+    session_expires DATETIME NULL,
+    person_id INT,
+    FOREIGN KEY (person_id) REFERENCES persons(person_id)
+);

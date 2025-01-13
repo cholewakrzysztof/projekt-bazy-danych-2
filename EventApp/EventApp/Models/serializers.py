@@ -1,4 +1,9 @@
 from rest_framework import serializers
+from .models import Address, Artists, AuthGroup, AuthGroupPermissions, AuthPermission, AuthUser, AuthUserGroups, \
+    AuthUserUserPermissions, Bands, Concerts, ContactInfo, ContributionTypes, Contributions, DjangoAdminLog, \
+    DjangoContentType, DjangoMigrations, DjangoSession, Employees, EventSeries, Localizations, Memberships, \
+    Participants, Partners, Performers, Persons, Roles, Styles, TicketTypes, Tickets, Works, Users
+
 from .models import Address, Artists, AuthGroup, AuthGroupPermissions, AuthPermission, AuthUser, AuthUserGroups, AuthUserUserPermissions, Bands, Concerts, ContactInfo, ContributionTypes, Contributions, DjangoAdminLog, DjangoContentType, DjangoMigrations, DjangoSession, Employees, EventSeries, Localizations, Memberships, Participants, Partners, Performers, Persons, Roles, Styles, TicketTypes, Tickets, Works, ConcertDetailsView, EmployeeWorkDetails, TicketSalesSummary
 
 class AddressSerializer(serializers.ModelSerializer):
@@ -167,3 +172,35 @@ class WorksSerializer(serializers.ModelSerializer):
     class Meta:
         model = Works
         fields = '__all__'
+
+class UsersSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Users
+        fields = '__all__'
+
+class OperationRequestSerializer(serializers.Serializer):
+    user_id = serializers.IntegerField()
+    database_name = serializers.ChoiceField(choices = [
+        'address',
+        'artists',
+        'bands',
+        'concerts',
+        'contact_info',
+        'contribution_types',
+        'contributions',
+        'employees',
+        'event_series',
+        'localizations',
+        'memberships',
+        'participants',
+        'partners',
+        'performers',
+        'persons',
+        'roles',
+        'styles',
+        'ticket_types',
+        'tickets',
+        'works',
+        'users'
+    ])
+    operation_type = serializers.ChoiceField(choices=['CREATE', 'READ', 'UPDATE', 'DELETE'])

@@ -83,13 +83,41 @@ pymysql.install_as_MySQLdb()
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'mydatabase',
+        'NAME': 'event_app',
         'USER': 'root',
         'PASSWORD': '',
         'HOST':'localhost',
         'PORT':'3306',
+    },
+    'admin': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'event_app',
+        'USER': 'admin_user',
+        'PASSWORD': 'secure_password_admin',
+        'HOST':'localhost',
+        'PORT':'3306',
+    },
+    'worker': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'event_app',
+        'USER': 'worker_user',
+        'PASSWORD': 'secure_password_worker',
+        'HOST':'localhost',
+        'PORT':'3306',
+    },
+    'client': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'event_app',
+        'USER': 'client_user',
+        'PASSWORD': 'secure_password_client',
+        'HOST':'localhost',
+        'PORT':'3306',
     }
 }
+
+# CREATE USER 'admin_user'@'%' IDENTIFIED BY 'secure_password_admin';
+# CREATE USER 'worker_user'@'%' IDENTIFIED BY 'secure_password_worker';
+# CREATE USER 'client_user'@'%' IDENTIFIED BY 'secure_password_client';
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators

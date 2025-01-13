@@ -1,105 +1,122 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
+from django.apps import apps
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework.response import Response
 from rest_framework import viewsets, status
-from rest_framework.decorators import action
-from django.db import connection
+from rest_framework.decorators import action, api_view
+
+from .models import (Address, Artists, AuthGroup, AuthGroupPermissions, AuthPermission, AuthUser, AuthUserGroups,
+                     AuthUserUserPermissions, Bands, Concerts, ContactInfo, ContributionTypes, Contributions,
+                     DjangoAdminLog, DjangoContentType, DjangoMigrations, DjangoSession, Employees, EventSeries,
+                     Localizations, Memberships, Participants, Partners, Performers, Persons, Roles, Styles,
+                     TicketTypes, Tickets, Works, Users)
+from .serializers import AddressSerializer, ArtistsSerializer, AuthGroupSerializer, AuthGroupPermissionsSerializer, \
+    AuthPermissionSerializer, AuthUserSerializer, AuthUserGroupsSerializer, AuthUserUserPermissionsSerializer, \
+    BandsSerializer, ConcertsSerializer, ContactInfoSerializer, ContributionTypesSerializer, ContributionsSerializer, \
+    DjangoAdminLogSerializer, DjangoContentTypeSerializer, DjangoMigrationsSerializer, DjangoSessionSerializer, \
+    EmployeesSerializer, EventSeriesSerializer, LocalizationsSerializer, MembershipsSerializer, ParticipantsSerializer, \
+    PartnersSerializer, PerformersSerializer, PersonsSerializer, RolesSerializer, StylesSerializer, \
+    TicketTypesSerializer, TicketsSerializer, WorksSerializer, UsersSerializer, \
+    OperationRequestSerializer
+from ..LoginComponent.LoggedUserContext import LoggedUserContext
+from django.db import connection, IntegrityError
 from .models import (Address, Artists, AuthGroup, AuthGroupPermissions, AuthPermission, AuthUser, AuthUserGroups, AuthUserUserPermissions, Bands, Concerts, ContactInfo, ContributionTypes, Contributions, DjangoAdminLog, DjangoContentType, DjangoMigrations, DjangoSession, Employees, EventSeries, Localizations, Memberships, Participants, Partners, Performers, Persons, Roles, Styles, TicketTypes, Tickets, Works, ConcertDetailsView, EmployeeWorkDetails, TicketSalesSummary)
 from .serializers import AddressSerializer, ArtistsSerializer, AuthGroupSerializer, AuthGroupPermissionsSerializer, AuthPermissionSerializer, AuthUserSerializer, AuthUserGroupsSerializer, AuthUserUserPermissionsSerializer, BandsSerializer, ConcertsSerializer, ContactInfoSerializer, ContributionTypesSerializer, ContributionsSerializer, DjangoAdminLogSerializer, DjangoContentTypeSerializer, DjangoMigrationsSerializer, DjangoSessionSerializer, EmployeesSerializer, EventSeriesSerializer, LocalizationsSerializer, MembershipsSerializer, ParticipantsSerializer, PartnersSerializer, PerformersSerializer, PersonsSerializer, RolesSerializer, StylesSerializer, TicketTypesSerializer, TicketsSerializer, WorksSerializer,ConcertDetailsViewSerializer,EmployeeWorkDetailsSerializer,TicketSalesSummarySerializer
 
 
 class AddressViewSet(viewsets.ModelViewSet):
-    queryset = Address.objects.all()
+    queryset = Address.objects.using(LoggedUserContext.get_connection_string()).all()
     serializer_class = AddressSerializer
 
 
 class ArtistsViewSet(viewsets.ModelViewSet):
-    queryset = Artists.objects.all()
+    queryset = Artists.objects.using(LoggedUserContext.get_connection_string()).all()
     serializer_class = ArtistsSerializer
 
 
 class AuthGroupViewSet(viewsets.ModelViewSet):
-    queryset = AuthGroup.objects.all()
+    queryset = AuthGroup.objects.using(LoggedUserContext.get_connection_string()).all()
     serializer_class = AuthGroupSerializer
 
 
 class AuthGroupPermissionsViewSet(viewsets.ModelViewSet):
-    queryset = AuthGroupPermissions.objects.all()
+    queryset = AuthGroupPermissions.objects.using(LoggedUserContext.get_connection_string()).all()
     serializer_class = AuthGroupPermissionsSerializer
 
 
 class AuthPermissionViewSet(viewsets.ModelViewSet):
-    queryset = AuthPermission.objects.all()
+    queryset = AuthPermission.objects.using(LoggedUserContext.get_connection_string()).all()
     serializer_class = AuthPermissionSerializer
 
 
 class AuthUserViewSet(viewsets.ModelViewSet):
-    queryset = AuthUser.objects.all()
+    queryset = AuthUser.objects.using(LoggedUserContext.get_connection_string()).all()
     serializer_class = AuthUserSerializer
 
 
 class AuthUserGroupsViewSet(viewsets.ModelViewSet):
-    queryset = AuthUserGroups.objects.all()
+    queryset = AuthUserGroups.objects.using(LoggedUserContext.get_connection_string()).all()
     serializer_class = AuthUserGroupsSerializer
 
 
 class AuthUserUserPermissionsViewSet(viewsets.ModelViewSet):
-    queryset = AuthUserUserPermissions.objects.all()
+    queryset = AuthUserUserPermissions.objects.using(LoggedUserContext.get_connection_string()).all()
     serializer_class = AuthUserUserPermissionsSerializer
 
 
 class BandsViewSet(viewsets.ModelViewSet):
-    queryset = Bands.objects.all()
+    queryset = Bands.objects.using(LoggedUserContext.get_connection_string()).all()
     serializer_class = BandsSerializer
 
 
 class ConcertsViewSet(viewsets.ModelViewSet):
-    queryset = Concerts.objects.all()
+    queryset = Concerts.objects.using(LoggedUserContext.get_connection_string()).all()
     serializer_class = ConcertsSerializer
 
 
 class ContactInfoViewSet(viewsets.ModelViewSet):
-    queryset = ContactInfo.objects.all()
+    queryset = ContactInfo.objects.using(LoggedUserContext.get_connection_string()).all()
     serializer_class = ContactInfoSerializer
 
 
 class ContributionTypesViewSet(viewsets.ModelViewSet):
-    queryset = ContributionTypes.objects.all()
+    queryset = ContributionTypes.objects.using(LoggedUserContext.get_connection_string()).all()
     serializer_class = ContributionTypesSerializer
 
 
 class ContributionsViewSet(viewsets.ModelViewSet):
-    queryset = Contributions.objects.all()
+    queryset = Contributions.objects.using(LoggedUserContext.get_connection_string()).all()
     serializer_class = ContributionsSerializer
 
 
 class DjangoAdminLogViewSet(viewsets.ModelViewSet):
-    queryset = DjangoAdminLog.objects.all()
+    queryset = DjangoAdminLog.objects.using(LoggedUserContext.get_connection_string()).all()
     serializer_class = DjangoAdminLogSerializer
 
 
 class DjangoContentTypeViewSet(viewsets.ModelViewSet):
-    queryset = DjangoContentType.objects.all()
+    queryset = DjangoContentType.objects.using(LoggedUserContext.get_connection_string()).all()
     serializer_class = DjangoContentTypeSerializer
 
 
 class DjangoMigrationsViewSet(viewsets.ModelViewSet):
-    queryset = DjangoMigrations.objects.all()
+    queryset = DjangoMigrations.objects.using(LoggedUserContext.get_connection_string()).all()
     serializer_class = DjangoMigrationsSerializer
 
 
 class DjangoSessionViewSet(viewsets.ModelViewSet):
-    queryset = DjangoSession.objects.all()
+    queryset = DjangoSession.objects.using(LoggedUserContext.get_connection_string()).all()
     serializer_class = DjangoSessionSerializer
 
 
 class EmployeesViewSet(viewsets.ModelViewSet):
-    queryset = Employees.objects.all()
+    queryset = Employees.objects.using(LoggedUserContext.get_connection_string()).all()
     serializer_class = EmployeesSerializer
 
 
 class EventSeriesViewSet(viewsets.ModelViewSet):
-    queryset = EventSeries.objects.all()
+    queryset = EventSeries.objects.using(LoggedUserContext.get_connection_string()).all()
     serializer_class = EventSeriesSerializer
 
     @action(detail=False, methods=['get'], url_path=r'custom_action/(?P<id>.+)')
@@ -130,27 +147,27 @@ class TicketSalesSummaryViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class LocalizationsViewSet(viewsets.ModelViewSet):
-    queryset = Localizations.objects.all()
+    queryset = Localizations.objects.using(LoggedUserContext.get_connection_string()).all()
     serializer_class = LocalizationsSerializer
 
 
 class MembershipsViewSet(viewsets.ModelViewSet):
-    queryset = Memberships.objects.all()
+    queryset = Memberships.objects.using(LoggedUserContext.get_connection_string()).all()
     serializer_class = MembershipsSerializer
 
 
 class ParticipantsViewSet(viewsets.ModelViewSet):
-    queryset = Participants.objects.all()
+    queryset = Participants.objects.using(LoggedUserContext.get_connection_string()).all()
     serializer_class = ParticipantsSerializer
 
 
 class PartnersViewSet(viewsets.ModelViewSet):
-    queryset = Partners.objects.all()
+    queryset = Partners.objects.using(LoggedUserContext.get_connection_string()).all()
     serializer_class = PartnersSerializer
 
 
 class PerformersViewSet(viewsets.ModelViewSet):
-    queryset = Performers.objects.all()
+    queryset = Performers.objects.using(LoggedUserContext.get_connection_string()).all()
     serializer_class = PerformersSerializer
 
     @action(detail=False, methods=['post'], url_path='delete-band-performances')
@@ -173,27 +190,27 @@ class PerformersViewSet(viewsets.ModelViewSet):
         return Response({"message": "Band performances deleted and places adjusted"}, status=status.HTTP_200_OK)
 
 class PersonsViewSet(viewsets.ModelViewSet):
-    queryset = Persons.objects.all()
+    queryset = Persons.objects.using(LoggedUserContext.get_connection_string()).all()
     serializer_class = PersonsSerializer
 
 
 class RolesViewSet(viewsets.ModelViewSet):
-    queryset = Roles.objects.all()
+    queryset = Roles.objects.using(LoggedUserContext.get_connection_string()).all()
     serializer_class = RolesSerializer
 
 
 class StylesViewSet(viewsets.ModelViewSet):
-    queryset = Styles.objects.all()
+    queryset = Styles.objects.using(LoggedUserContext.get_connection_string()).all()
     serializer_class = StylesSerializer
 
 
 class TicketTypesViewSet(viewsets.ModelViewSet):
-    queryset = TicketTypes.objects.all()
+    queryset = TicketTypes.objects.using(LoggedUserContext.get_connection_string()).all()
     serializer_class = TicketTypesSerializer
 
 
 class TicketsViewSet(viewsets.ModelViewSet):
-    queryset = Tickets.objects.all()
+    queryset = Tickets.objects.using(LoggedUserContext.get_connection_string()).all()
     serializer_class = TicketsSerializer
 
     @action(detail=False, methods=['post'], url_path='mark-used-tickets')
@@ -207,7 +224,7 @@ class TicketsViewSet(viewsets.ModelViewSet):
 
 
 class WorksViewSet(viewsets.ModelViewSet):
-    queryset = Works.objects.all()
+    queryset = Works.objects.using(LoggedUserContext.get_connection_string()).all()
     serializer_class = WorksSerializer
 
     @action(detail=False, methods=['post'], url_path='update-salaries')
@@ -229,3 +246,110 @@ class WorksViewSet(viewsets.ModelViewSet):
             cursor.callproc("UpdateSalariesByWorkRoleAndConcert", [concert_id, work_role_id, multiplier])
 
         return Response({"message": "Salaries updated successfully"}, status=status.HTTP_200_OK)
+
+
+class UsersViewSet(viewsets.ViewSet):
+    queryset = Users.objects.using(LoggedUserContext.get_connection_string()).all()
+    serializer_class = UsersSerializer
+
+    @action(detail=False, methods=['get'], url_path=r'login/(?P<login>.+)/(?P<password>.+)')
+    def login_user(self, request, login=None, password=None):
+        sql = "SELECT * FROM users WHERE login = '{}' AND password = '{}'".format(login, password)
+        response = Users.objects.using('default').raw(sql)
+
+        if len(response) > 0:
+            user = Users.objects.using('default').get(login=login, password=password)
+            user.session_expires = datetime.now() + timedelta(minutes=5)
+            user.save()
+
+            LoggedUserContext.setup_logged_context(user.session_expires, user.user_type)
+
+            serializer = UsersSerializer(user, many=False)
+            return Response(serializer.data)
+
+        return Response([])
+
+    @action(detail=False, methods=['get'], url_path=r'all')
+    def get_all(self, request):
+        response = Users.objects.using('default').all()
+        serializer = UsersSerializer(response, many=True)
+        return Response(serializer.data)
+
+class PerformOperationViewSet(viewsets.ViewSet):
+    serializer_class = OperationRequestSerializer
+
+    @swagger_auto_schema(request_body=OperationRequestSerializer)
+    @action(detail=False, methods=['post'], url_path=r'')
+    def perform_operation(self, request):
+        serializer = OperationRequestSerializer(data=request.data)
+
+        if serializer.is_valid():
+            user_id = serializer.validated_data['user_id']
+            database_name = serializer.validated_data['database_name']
+            operation_type = serializer.validated_data['operation_type']
+
+            user = Users.objects.using('default').get(user_id=user_id)
+            user_type = UsersSerializer(user, many=False).data['user_type']
+
+            result = self.execute_operation(database_name, operation_type, user_type)
+            message = (f"Operation '{operation_type}' "
+                       f"performed for user {user_id} (type: {user_type}) "
+                       f"on database '{database_name}', "
+                       f"result: {result}")
+
+            return Response({"message": message})
+
+        return Response(serializer.errors, status=400)
+
+    @staticmethod
+    def create_model(model,conn):
+        try:
+            instance = model.objects.using(conn).create()
+            return f"Created a new {model.__name__} instance"
+        except IntegrityError as e:
+            return f"Error creating {model.__name__}: {str(e)}"
+
+    @staticmethod
+    def read(model,conn):
+        instances = model.objects.using(conn).all()
+        return f"Read operation on {model.__name__} model, found {len(instances)} instances"
+
+    @staticmethod
+    def update_model(model,conn):
+        instance = model.objects.using(conn).first()
+        if instance:
+            instance.save()
+            return f"Updated {model.__name__} instance"
+        return f"No {model.__name__} instance to update"
+
+    @staticmethod
+    def delete(model,conn):
+        try:
+            instance = model.objects.using(conn).first()
+            if instance:
+                instance.delete()
+                return f"Deleted {model.__name__} instance"
+            return f"No {model.__name__} instance to delete"
+        except IntegrityError as e:
+            return f"Error deleting {model.__name__}: {str(e)}"
+
+    operation_map = {
+        'CREATE': create_model,
+        'READ': read,
+        'UPDATE': update_model,
+        'DELETE': delete
+    }
+
+    def execute_operation(self, database_name, operation_type, conn):
+        try:
+            model = apps.get_model('EventApp', database_name)
+        except LookupError:
+            return 'Model not found for database name'
+
+
+        operation_func = self.operation_map.get(operation_type)
+
+        if operation_func:
+            return operation_func(model,conn)
+        else:
+            return 'Invalid operation'

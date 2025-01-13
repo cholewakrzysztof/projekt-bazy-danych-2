@@ -388,4 +388,15 @@ class Works(models.Model):
         managed = False
         db_table = 'works'
 
+class Users(models.Model):
+    user_id = models.AutoField(primary_key=True)
+    login = models.CharField(max_length=60)
+    password = models.CharField(max_length=60)
+    user_type = models.CharField(max_length=10)
+    active = models.IntegerField()
+    session_expires = models.DateTimeField(blank=True, null=True)
+    person_id = models.IntegerField(blank=True, null=True)
 
+    class Meta:
+        managed = False
+        db_table = 'users'
