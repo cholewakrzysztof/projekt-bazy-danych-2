@@ -237,7 +237,7 @@ BEGIN
 			INSERT INTO participants (person_id) VALUES (i);
 		END IF;
         INSERT INTO tickets (concert_id, price, type_id, participant_id, place, used)
-        VALUES (1, 100, 1, i, CONCAT('Place', i), 0);
+        VALUES (1, 100, 1, i, CONCAT('Place', i), NULL);
         SET i = i + 1;
     END WHILE;
 END$$

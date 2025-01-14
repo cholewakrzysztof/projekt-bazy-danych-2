@@ -7,6 +7,8 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework import viewsets, status
 from rest_framework.decorators import action, api_view
+from drf_yasg import openapi
+
 
 from .models import (Address, Artists, AuthGroup, AuthGroupPermissions, AuthPermission, AuthUser, AuthUserGroups,
                      AuthUserUserPermissions, Bands, Concerts, ContactInfo, ContributionTypes, Contributions,
@@ -200,88 +202,6 @@ class TicketSalesSummaryViewSet(viewsets.ReadOnlyModelViewSet):
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 
-    queryset = Tickets.objects.all()
-    serializer_class = TicketsSerializer
-
-    @action(detail=False, methods=['post'], url_path='purchase-ticket')
-    def purchase_ticket(self, request):
-        """
-        Endpoint do zakupu biletu.
-        """
-        concert_id = request.data.get('concert_id')
-        ticket_type = request.data.get('ticket_type')
-        participant_id = request.data.get('participant_id')
-
-        if not (concert_id and ticket_type and participant_id):
-            return Response(
-                {"error": "concert_id, ticket_type, and participant_id are required"},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
-        # Pobierz pierwszy dostępny bilet dla danego koncertu i typu
-        ticket = Tickets.objects.filter(
-            concert_id=concert_id,
-            type_id=ticket_type,
-            participant_id__isnull=True
-        ).first()
-
-        if not ticket:
-            return Response(
-                {"error": "No available tickets of the selected type for this concert."},
-                status=status.HTTP_404_NOT_FOUND
-            )
-
-        # Zaktualizuj dane biletu
-        ticket.participant_id = participant_id
-        ticket.save()
-
-        return Response(TicketsSerializer(ticket).data, status=status.HTTP_200_OK)
-
-    @action(detail=False, methods=['get'], url_path='sold-tickets/(?P<concert_id>\d+)')
-    def sold_tickets(self, request, concert_id=None):
-        """
-        Endpoint do sprawdzania sprzedanych biletów na dany koncert.
-        """
-        tickets = Tickets.objects.filter(concert_id=concert_id, participant_id__isnull=False)
-
-        if not tickets.exists():
-            return Response(
-                {"message": "No sold tickets found for this concert."},
-                status=status.HTTP_404_NOT_FOUND
-            )
-
-        return Response(TicketsSerializer(tickets, many=True).data, status=status.HTTP_200_OK)
-
-    @action(detail=False, methods=['post'], url_path='use-ticket')
-    def use_ticket(self, request):
-        """
-        Endpoint do oznaczania biletu jako wykorzystanego.
-        """
-        ticket_id = request.data.get('ticket_id')
-
-        if not ticket_id:
-            return Response(
-                {"error": "ticket_id is required"},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
-        ticket = Tickets.objects.filter(ticket_id=ticket_id, used=False).first()
-
-        if not ticket:
-            return Response(
-                {"error": "Ticket not found or already used."},
-                status=status.HTTP_404_NOT_FOUND
-            )
-
-        # Oznacz bilet jako wykorzystany
-        ticket.used = True
-        ticket.save()
-
-        return Response(
-            {"message": "Ticket marked as used.", "ticket": TicketsSerializer(ticket).data},
-            status=status.HTTP_200_OK
-        )
-
 
 class LocalizationsViewSet(viewsets.ModelViewSet):
     queryset = Localizations.objects.using(LoggedUserContext.get_connection_string()).all()
@@ -359,6 +279,137 @@ class TicketsViewSet(viewsets.ModelViewSet):
             cursor.callproc("MarkUsedTicketsForPastConcerts")
         return Response({"message": "Procedure executed successfully"}, status=status.HTTP_200_OK)
 
+    @swagger_auto_schema(
+        method='post',
+        operation_summary="Zakup biletu",
+        operation_description="Endpoint umożliwiający zakup biletu.",
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            required=['concert_id', 'type_id', 'participant_id'],
+            properties={
+                'concert_id': openapi.Schema(
+                    type=openapi.TYPE_INTEGER, description="ID koncertu"
+                ),
+                'type_id': openapi.Schema(
+                    type=openapi.TYPE_INTEGER, description="Typ biletu"
+                ),
+                'participant_id': openapi.Schema(
+                    type=openapi.TYPE_INTEGER, description="ID uczestnika"
+                ),
+            },
+        ),
+        responses={
+            200: TicketsSerializer(many=False),
+            400: openapi.Response(description="Nieprawidłowe dane wejściowe"),
+            404: openapi.Response(description="Brak dostępnych biletów"),
+        }
+    )
+    @action(detail=False, methods=['post'], url_path='purchase-ticket')
+    def purchase_ticket(self, request):
+        """
+        Endpoint do zakupu biletu.
+        """
+        concert_id = request.data.get('concert_id')
+        type_id = request.data.get('type_id')
+        participant_id = request.data.get('participant_id')
+
+        if not (concert_id and type_id and participant_id):
+            return Response(
+                {"error": "concert_id, ticket_type, and participant_id are required"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # Pobierz pierwszy dostępny bilet dla danego koncertu i typu
+        ticket = Tickets.objects.filter(
+            concert_id=concert_id,
+            type_id=type_id,
+            participant_id__isnull=True
+        ).first()
+
+        if not ticket:
+            return Response(
+                {"error": "No available tickets of the selected type for this concert."},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        # Zaktualizuj dane biletu
+        ticket.participant_id = participant_id
+        ticket.used = 0
+        ticket.save()
+
+        return Response(TicketsSerializer(ticket).data, status=status.HTTP_200_OK)
+
+
+    @action(detail=False, methods=['get'], url_path='sold-tickets/(?P<concert_id>\d+)')
+    def sold_tickets(self, request, concert_id=None):
+        """
+             Endpoint do sprawdzania sprzedanych biletów na dany koncert.
+             """
+
+        if not concert_id:
+            return Response(
+                {"error": "concert_id, ticket_type, and participant_id are required"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        tickets = Tickets.objects.filter(concert_id=concert_id, participant_id__isnull=False)
+
+        if not tickets.exists():
+            return Response(
+                {"message": "No sold tickets found for this concert."},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        return Response(TicketsSerializer(tickets, many=True).data, status=status.HTTP_200_OK)
+
+    @swagger_auto_schema(
+        method='post',
+        operation_summary="Wykorzystanie biletu",
+        operation_description="Endpoint umożliwiający ustawienie biletu na wykorzystany.",
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            required=['ticket_id'],
+            properties={
+                'ticket_id': openapi.Schema(
+                    type=openapi.TYPE_INTEGER, description="ID biletu"
+                )
+            },
+        ),
+        responses={
+            200: TicketsSerializer(many=False),
+            400: openapi.Response(description="Nieprawidłowe dane wejściowe"),
+            404: openapi.Response(description="Bilet nie istnieje"),
+        }
+    )
+    @action(detail=False, methods=['post'], url_path='use-ticket')
+    def use_ticket(self, request):
+        """
+        Endpoint do oznaczania biletu jako wykorzystanego.
+        """
+        ticket_id = request.data.get('ticket_id')
+
+        if not ticket_id:
+            return Response(
+                {"error": "ticket_id is required"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        ticket = Tickets.objects.filter(ticket_id=ticket_id, used=False).first()
+
+        if not ticket:
+            return Response(
+                {"error": "Ticket not found or already used."},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        # Oznacz bilet jako wykorzystany
+        ticket.used = 1;
+        ticket.save()
+
+        return Response(
+            {"message": "Ticket marked as used.", "ticket": TicketsSerializer(ticket).data},
+            status=status.HTTP_200_OK
+        )
 
 class WorksViewSet(viewsets.ModelViewSet):
     queryset = Works.objects.using(LoggedUserContext.get_connection_string()).all()
