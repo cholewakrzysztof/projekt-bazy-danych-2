@@ -1,7 +1,9 @@
 from datetime import datetime, timedelta
 
 from django.apps import apps
+from django.db.models import Q
 from drf_yasg.utils import swagger_auto_schema
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework import viewsets, status
 from rest_framework.decorators import action, api_view
@@ -71,9 +73,62 @@ class BandsViewSet(viewsets.ModelViewSet):
 
 
 class ConcertsViewSet(viewsets.ModelViewSet):
-    queryset = Concerts.objects.using(LoggedUserContext.get_connection_string()).all()
+    queryset = Concerts.objects.all()
     serializer_class = ConcertsSerializer
 
+    @action(
+        detail=False,
+        methods=['get'],
+        url_path=r'filter/(?P<localization_id>\d+|null)/(?P<date>[^/]+|null)/(?P<start_date>[^/]+|null)/(?P<end_date>[^/]+|null)',
+        permission_classes=[AllowAny],
+    )
+    def filter_concerts(self, request, localization_id=None, date=None, start_date=None, end_date=None):
+        """
+        Endpoint dla filtrowania koncertów i zespołów:
+        - localization_id: ID lokalizacji (int lub null)
+        - date: Data koncertu (string w formacie YYYY-MM-DD lub null)
+        - start_date: Początek zakresu dat (string w formacie YYYY-MM-DD lub null)
+        - end_date: Koniec zakresu dat (string w formacie YYYY-MM-DD lub null)
+        """
+
+        # Zamiana "null" na None dla parametrów opcjonalnych
+        localization_id = None if localization_id == "null" else localization_id
+        date = None if date == "null" else date
+        start_date = None if start_date == "null" else start_date
+        end_date = None if end_date == "null" else end_date
+
+        # Filtruj koncerty według lokalizacji i daty
+        concert_query = Q()
+        if localization_id:
+            concert_query &= Q(localization_id=localization_id)
+        if date:
+            concert_query &= Q(date=date)
+
+        concerts = Concerts.objects.filter(concert_query)
+
+        # Filtruj zespoły według zakresu dat
+        band_query = Q()
+        if start_date and end_date:
+            band_query &= Q(start_date__lte=end_date) & Q(end_date__gte=start_date)
+
+        memberships = Memberships.objects.filter(band_query)
+        if not start_date or not end_date:
+            # Jeśli brakuje start_date lub end_date, wybierz wszystkie zespoły z powiązaniami
+            memberships = Memberships.objects.all()
+
+        bands = Bands.objects.filter(band_id__in=memberships.values_list('band_id', flat=True))
+
+        # Serializacja wyników
+        concert_data = ConcertsSerializer(concerts, many=True).data
+        band_data = BandsSerializer(bands, many=True).data
+
+        # Przygotowanie odpowiedzi
+        response_data = {
+            "concerts": concert_data,
+            "bands": band_data,
+        }
+
+        return Response(response_data, status=status.HTTP_200_OK)
 
 class ContactInfoViewSet(viewsets.ModelViewSet):
     queryset = ContactInfo.objects.using(LoggedUserContext.get_connection_string()).all()

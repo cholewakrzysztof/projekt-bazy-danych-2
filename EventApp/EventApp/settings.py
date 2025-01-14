@@ -83,7 +83,7 @@ pymysql.install_as_MySQLdb()
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'event_app',
+        'NAME': 'mydatabase',
         'USER': 'root',
         'PASSWORD': '',
         'HOST':'localhost',

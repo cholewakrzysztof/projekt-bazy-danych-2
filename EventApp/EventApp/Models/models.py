@@ -222,10 +222,10 @@ class EventSeries(models.Model):
 
 
 class ConcertDetailsView(models.Model):
-    concert_id = models.IntegerField()
+    concert_id = models.IntegerField(primary_key=True)
     concert_name = models.CharField(max_length=255)
     date = models.DateField()
-    duration = models.IntegerField()
+    duration = models.TimeField()
     series_name = models.CharField(max_length=255)
     country = models.CharField(max_length=255)
     city = models.CharField(max_length=255)
@@ -234,13 +234,13 @@ class ConcertDetailsView(models.Model):
 
     class Meta:
         managed = False  # Django nie będzie zarządzać tą tabelą
-        db_table = 'Concert_details_view'
+        db_table = 'concert_details_view'
 
 class EmployeeWorkDetails(models.Model):
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
     email = models.EmailField()
-    concert_id = models.IntegerField()
+    concert_id = models.IntegerField(primary_key=True)
     concert_name = models.CharField(max_length=255)
     date = models.DateField()
     work_hours = models.IntegerField()
@@ -249,11 +249,11 @@ class EmployeeWorkDetails(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'Employee_work_details'
+        db_table = 'employee_work_details'
 
 
 class TicketSalesSummary(models.Model):
-    series_id = models.IntegerField()
+    series_id = models.IntegerField(primary_key=True)
     series_name = models.CharField(max_length=255)
     concert_id = models.IntegerField()
     concert_name = models.CharField(max_length=255)
@@ -262,7 +262,7 @@ class TicketSalesSummary(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'Ticket_sales_summary'
+        db_table = 'ticket_sales_summary'
 
 
 class Localizations(models.Model):
